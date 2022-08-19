@@ -1,0 +1,27 @@
+﻿<Window x:Class="UserAplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UserAplication"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <ListView ItemsSource="{Binding listaDeUsuarios}" d:ItemsSource="{d:SampleData ItemCount=5}" SelectedItem="{Binding selectedUser}" Margin="0,0,0,67">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="ID"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Nome"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Address}" Header="Endereço"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Email}" Header="Email"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Job}" Header="Cargo"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Height="66" VerticalAlignment="Bottom">
+            <Button Command="{Binding Add}" Content="Adicionar Usuário" Margin="50,0,0,0" Height="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Button Command="{Binding Update}" Content="Atualizar Usuário" HorizontalAlignment="Center" Margin="0,0,0,0" Width="100" VerticalAlignment="Center" Height="20"/>
+            <Button Command="{Binding Remove}" Content="Deletar Usuário" Margin="0,0,50,0" Height="20" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100"/>
+        </Grid>
+    </Grid>
+</Window>
