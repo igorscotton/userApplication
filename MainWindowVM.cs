@@ -16,11 +16,11 @@ namespace UserAplication
         public ObservableCollection<Usuario> listaDeUsuarios { get; set; }
         public Usuario selectedUser {get; set;}
 
-        public ICommand Add { get; set; }
-        public ICommand Remove { get; set; }
-        public ICommand Update { get; set; }
+        public ICommand Add { get; private set; }
+        public ICommand Remove { get; private set; }
+        public ICommand Update { get; private set; }
 
-        public Connection connection { get; set; }
+        private Connection connection;
 
         public MainWindowVM()
         {
@@ -28,37 +28,28 @@ namespace UserAplication
 
             listaDeUsuarios = new ObservableCollection<Usuario>(connection.Select());
 
-            AdicionarUsuario(connection);
-
-            AtualizarUsuario(connection);
-
-            RemoverUsuario(connection);
-            
+            IniciaComandos();    
         }
 
-        public void AdicionarUsuario(Connection connection)
+        public void IniciaComandos()
         {
             Add = new RelayCommand((object _) =>
-            {                
+            {
                 Usuario newUser = new Usuario();
                 UserWindow addWindow = new UserWindow();
                 addWindow.DataContext = newUser;
                 addWindow.ShowDialog();
 
-                if ((bool)addWindow.DialogResult){
+                if ((bool)addWindow.DialogResult)
+                {
 
-                   newUser.Id = listaDeUsuarios.Count() + 1;
-                    
-                   connection.InsertUser(newUser);
+                    connection.InsertUser(newUser);
 
-                   listaDeUsuarios.Add(newUser);
-                  
+                    listaDeUsuarios.Add(newUser);
+
                 }
             });
-        }
 
-        public void AtualizarUsuario(Connection connection)
-        {
             Update = new RelayCommand((object _) =>
             {
                 Usuario updateUser = selectedUser.Clone();
@@ -67,8 +58,8 @@ namespace UserAplication
 
                 updateWindow.DataContext = updateUser;
 
-                updateWindow.ShowDialog();                
-                
+                updateWindow.ShowDialog();
+
                 if ((bool)updateWindow.DialogResult)
                 {
                     selectedUser.Name = updateUser.Name;
@@ -79,17 +70,15 @@ namespace UserAplication
                     connection.UpdateUser(selectedUser);
                 }
             }, (object _) => selectedUser != null);
-        }
 
-        public void RemoverUsuario(Connection connection)
-        {
             Remove = new RelayCommand((object _) =>
             {
                 connection.RemoveUser(selectedUser);
 
                 listaDeUsuarios.Remove(selectedUser);
 
-            },(object _) => selectedUser != null);
+            }, (object _) => selectedUser != null);
+
         }
     }
 }

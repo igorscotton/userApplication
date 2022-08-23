@@ -22,7 +22,7 @@ namespace UserAplication
 
         private string sql;
 
-        private NpgsqlCommand cmd;
+        private NpgsqlCommand commandSelect;
 
         private NpgsqlCommand commandInsert;
 
@@ -43,10 +43,10 @@ namespace UserAplication
             {
                 conn.Open();               
 
-                sql = @"select * from db_select()";
-                cmd = new NpgsqlCommand(sql, conn);
+                sql = @"SELECT * FROM usuario";
+                commandSelect = new NpgsqlCommand(sql, conn);
                                 
-                NpgsqlDataReader reader = cmd.ExecuteReader();
+                NpgsqlDataReader reader = commandSelect.ExecuteReader();
 
                 while (reader.Read())
                 {
@@ -75,15 +75,20 @@ namespace UserAplication
             }
         }
 
-        public Usuario InsertUser(Usuario usuario)
+        public void InsertUser(Usuario usuario)
         {
             try
             {
                 conn.Open();
-                sql = String.Format("insert into usuario(name, email, address, job) values ('{0}', '{1}', '{2}', '{3}')", usuario.Name, usuario.Email, usuario.Address, usuario.Job);
-                //sql = @"select * from db_insert(" + usuario.Name + ", " + usuario.Email + ", " + usuario.Address + ", " + usuario.Job + ")";
-                commandInsert = new NpgsqlCommand(sql, conn);                
-                commandInsert.ExecuteNonQuery();
+                sql = String.Format("INSERT INTO usuario(name, email, address, job) VALUES ('{0}', '{1}', '{2}', '{3}') RETURNING id", usuario.Name, usuario.Email, usuario.Address, usuario.Job);
+                commandInsert = new NpgsqlCommand(sql, conn);
+                NpgsqlDataReader reader = commandInsert.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    usuario.Id = reader.GetInt32(0);
+                }               
+                
                 
             }
             catch(Exception e)
@@ -94,7 +99,8 @@ namespace UserAplication
             {                
                 conn.Close();
             }
-            return usuario;
+            
+
         }
 
         public void UpdateUser(Usuario usuario)
@@ -102,7 +108,8 @@ namespace UserAplication
             try
             {
                 conn.Open();
-                sql = String.Format("select * from db_update('{0}', '{1}', '{2}', '{3}', '{4}')", usuario.Id , usuario.Name, usuario.Email, usuario.Address, usuario.Job);                
+                sql = String.Format("UPDATE usuario SET name = '{0}', email = '{1}', address='{2}', job='{3}' WHERE id = '{4}'", usuario.Name, usuario.Email, usuario.Address, usuario.Job, usuario.Id);                
+                
                 commandInsert = new NpgsqlCommand(sql, conn);
                 commandInsert.ExecuteNonQuery();
             }
@@ -121,7 +128,7 @@ namespace UserAplication
             try
             {
                 conn.Open();
-                sql = String.Format("select * from db_delete('{0}')", usuario.Id);
+                sql = String.Format("DELETE FROM usuario WHERE id = '{0}'", usuario.Id);
                 commandDelete = new NpgsqlCommand(sql, conn);
                 commandDelete.ExecuteNonQuery();
             }

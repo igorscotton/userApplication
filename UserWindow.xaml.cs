@@ -54,12 +54,7 @@ namespace UserAplication
             catch
             {
                 MessageBox.Show($"Email inválido! Tente Novamente");
-            }
-            
-
-          
-
-            
+            }   
         }
     }
 }

@@ -25,10 +25,5 @@ namespace UserAplication
             InitializeComponent();
             DataContext = new MainWindowVM();
         }
-
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }
